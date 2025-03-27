@@ -1,8 +1,8 @@
 import { configureStore, createAction } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
 
 export const addContact = createAction("contacts/addContact");
 export const dellContact = createAction("contacts/dellContact");
-
 export const setFilter = createAction("filters/setFilter");
 
 const initialState = {
@@ -21,7 +21,14 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         contacts: {
           ...state.contacts,
-          items: [...state.contacts.items, action.payload],
+          items: [
+            ...state.contacts.items,
+            {
+              id: nanoid(),
+              name: action.payload.name,
+              number: action.payload.number,
+            },
+          ],
         },
       };
 

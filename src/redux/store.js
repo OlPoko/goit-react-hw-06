@@ -1,62 +1,39 @@
-import { configureStore, createAction } from "@reduxjs/toolkit";
-import { nanoid } from "nanoid";
+import { configureStore } from "@reduxjs/toolkit";
+import contactsSliceReducer from "./contactsSlice";
+import filterSliceReducer from "./filtersSlice";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-export const addContact = createAction("contacts/addContact");
-export const dellContact = createAction("contacts/dellContact");
-export const setFilter = createAction("filters/setFilter");
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
-const initialState = {
-  contacts: {
-    items: [],
-  },
-  filters: {
-    name: "",
-  },
+const contactsPersistConfig = {
+  key: "user_contacts",
+  storage,
 };
 
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case "contacts/addContact":
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          items: [
-            ...state.contacts.items,
-            {
-              id: nanoid(),
-              name: action.payload.name,
-              number: action.payload.number,
-            },
-          ],
-        },
-      };
-
-    case "contacts/dellContact":
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          items: state.contacts.items.filter(
-            (contact) => contact.id !== action.payload
-          ),
-        },
-      };
-
-    case "filters/setFilter":
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          name: action.payload,
-        },
-      };
-
-    default:
-      return state;
-  }
-};
+const persistedContactsReducer = persistReducer(
+  contactsPersistConfig,
+  contactsSliceReducer
+);
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    contacts: persistedContactsReducer,
+    filters: filterSliceReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+export const persistor = persistStore(store);

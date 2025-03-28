@@ -14,21 +14,4 @@ const filterSlice = createSlice({
 
 export const { setFilter } = filterSlice.actions;
 export default filterSlice.reducer;
-
-// export const setFilter = createAction("filters/setFilter");
-
-// const initialState = {
-//   name: "",
-// };
-
-// export default function filterSliceReducer(state = initialState, action) {
-//   switch (action.type) {
-//     case setFilter.type:
-//       return {
-//         ...state,
-//         name: action.payload,
-//       };
-//     default:
-//       return state;
-//   }
-// }
+export const selectFilter = (state) => state.filters.name;

@@ -2,13 +2,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faPhone } from "@fortawesome/free-solid-svg-icons";
 import styles from "./Contact.module.css";
 import { useDispatch } from "react-redux";
-import { dellContact } from "../../redux/contactsSlice";
+import { deleteContact } from "../../redux/contactsSlice";
 
 const Contact = ({ id, name, number }) => {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    dispatch(dellContact(id));
+    dispatch(deleteContact(id));
   };
 
   return (
